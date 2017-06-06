@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * @file
+ * Module file.
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function islandora_doi_sfu_form_islandora_doi_framework_manage_doi_alter(&$form, $form_state, $form_id) {
+  $resourcetype_values = array(
+    'Audiovisual' => 'Audiovisual','Collection' => 'Collection', 'Dataset' => 'Dataset',
+    'Event' => 'Event','Image' => 'Image','InteractiveResource' => 'InteractiveResource',
+    'Model' => 'Model','PhysicalObject' => 'PhysicalObject', 'Service' => 'Service',
+    'Software' => 'Software', 'Sound' => 'Sound', 'Text' => 'Text', 'Workflow' => 'Workflow',
+    'Other' => 'Other',
+  );
+  $form['islandora_doi_sfu_resourcetype'] = array(
+    '#type' => 'select',
+    '#title' => t("Select a resource type to use in the DataCite metadata."),
+    '#options' => $resourcetype_values,
+  );
+  // We add a custom validate handler instead of a custom submit handler
+  // because the submit handler is not fired if there is an error in
+  // generating the DataCite XML.
+  $form['#validate'][] = 'islandora_doi_sfu_get_resourcetype';
+}
+
+/**
+ * Form validation handler.
+ */
+function islandora_doi_sfu_get_resourcetype($form, &$form_state) {
+  $_SESSION['islandora_doi_sfu_resourcetype'] = $form_state['values']['islandora_doi_sfu_resourcetype'];
+}
+
+/**
+ * Theme preprocess function.
+ */
+function islandora_doi_sfu_preprocess_datacite_metadata(&$variables) {
+  if (isset($_SESSION['islandora_doi_sfu_resourcetype'])) {
+    $variables['resource_type'] = $_SESSION['islandora_doi_sfu_resourcetype'];
+  }
+}

@@ -1,0 +1,6 @@
+name = Islandora DOI Framework (SFU extensions)
+description = "Simon Fraser University's extensions to the Islandora DOI Framework."
+package = Islandora DOI Framework
+dependencies[] = islandora_doi_framework
+version = 7.x-dev
+core = 7.x
